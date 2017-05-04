@@ -10,15 +10,15 @@
  */
 angular
   .module('picaticFrontendApp', [
-    'ngAnimate',
-    'ngAria',
-    'ngCookies',
-    'ngMessages',
-    'ngResource',
+    // 'ngAnimate',
+    // 'ngAria',
+    // 'ngCookies',
+    // 'ngMessages',
+    // 'ngResource',
     'ngRoute',
-    'ngSanitize',
-    'ngTouch'
-  ])
+    // 'ngSanitize'
+    
+    ])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
