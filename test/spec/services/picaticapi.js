@@ -7,6 +7,7 @@ describe('Service: picaticAPI', function () {
 
   // instantiate service
   var picaticAPI;
+
   beforeEach(inject(function (_picaticAPI_) {
     picaticAPI = _picaticAPI_;
   }));

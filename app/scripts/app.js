@@ -10,15 +10,16 @@
  */
 angular
   .module('picaticFrontendApp', [
+    'ngRoute',
     // 'ngAnimate',
     // 'ngAria',
     // 'ngCookies',
     // 'ngMessages',
     // 'ngResource',
-    'ngRoute',
     // 'ngSanitize'
-    
+
     ])
+  .value("apiToken", "sk_live_f1090aeab90d8ed651128084abf4684f")
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {

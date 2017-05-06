@@ -8,10 +8,18 @@
  * Controller of the picaticFrontendApp
  */
 angular.module('picaticFrontendApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MainCtrl', function ($scope, PicaticAPI) {
+    $scope.me = null;
+    //
+    // PicaticAPI.getMe().then((data) => {
+    //   console.log(data);
+    //   $scope.me = data
+    //   $scope.$apply();
+    // });
+
+    PicaticAPI.getEvents().then(events=> {
+      console.log(events);
+    })
+
+
   });
