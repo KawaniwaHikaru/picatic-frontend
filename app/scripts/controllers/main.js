@@ -17,8 +17,8 @@ angular.module('picaticFrontendApp')
     //   $scope.$apply();
     // });
 
-    PicaticAPI.getEvents().then(events=> {
-      console.log(events);
+    PicaticAPI.findEvents().then(events => {
+      $scope.events = events;
     })
 
 

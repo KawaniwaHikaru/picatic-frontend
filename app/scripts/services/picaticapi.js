@@ -14,7 +14,7 @@ angular.module('picaticFrontendApp')
     let urlBase = 'https://api.picatic.com/v2';
     let apiFactory = {};
     let _headers = {'Authorization': 'Bearer ' + apiToken};
-    let _paging = {page: {limit: 10, offset: 0}};
+    let _paging = {limit: 10, offset: 0};
     let cache = $cacheFactory('PicaticCache');
     cache.put('me', {
       "attributes": {
@@ -43,7 +43,7 @@ angular.module('picaticFrontendApp')
         "stripe_publishable_key": null,
         "telephone": "",
         "website": "http://www.picatic.com"
-      }, "id": "0", "relationships": {}, "type": "user"
+      }, "id": "575569", "relationships": {}, "type": "user"
     })
 
     // building the form query string,
@@ -99,20 +99,54 @@ angular.module('picaticFrontendApp')
       return queryString;
     }
 
-
-    apiFactory.getEvents = function () {
+    apiFactory.getEventTicketPrices = function (eventId) {
+      // let event = cache.get('me');
       let params = {
         filter: {
-          user_id: $cacheFactory.get('me').id
+          event_id: eventId
         },
         page: _paging
       };
 
+      return $http({
+        method: 'GET',
+        url: urlBase + '/ticket_price' + '?' + toQueryString(params),
+        headers: _headers
+      }).then(response => {
+        cache.put('events', response.data.data);
+        return cache.get('events');
+      });
+    };
+
+
+    apiFactory.getEvent = function (eventId) {
+      return $http({
+        method: 'GET',
+        url: urlBase + '/event/' + eventId,
+        headers: _headers
+      }).then(response => {
+        return response;
+        // cache.put('events', response.data.data);
+        // return cache.get('events');
+      });
+    };
+
+    apiFactory.findEvents = function () {
+      let me = cache.get('me');
+      let params = {
+        filter: {
+          user_id: me.id
+        },
+        page: _paging
+      };
 
       return $http({
         method: 'GET',
-        url: urlBase + '/event' + toQueryString(params),
+        url: urlBase + '/event' + '?' + toQueryString(params),
         headers: _headers
+      }).then(response => {
+        cache.put('events', response.data.data);
+        return cache.get('events');
       });
     };
 
