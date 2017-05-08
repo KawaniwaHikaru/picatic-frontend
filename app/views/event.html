@@ -10,7 +10,7 @@
     <tr ng-repeat="price in ticketPrices">
       <td>{{price.attributes.name}}</td>
       <td>{{price.attributes.price | currency:"CND$":0}}</td>
-      <td><a href="/#!/event/{{event.id}}/ticket/{{price.id}}">Edit</a></td>
+      <td><a href="/#!/event/{{eventId}}/ticket/{{price.id}}">Edit</a></td>
     </tr>
   </table>
 </div>

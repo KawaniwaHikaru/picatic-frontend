@@ -10,11 +10,12 @@
 angular.module('picaticFrontendApp')
   .controller('EventCtrl', function ($routeParams, $scope, PicaticAPI) {
 
+    $scope.eventId = $routeParams.eventId;
     // console.log($routeParams);
     PicaticAPI.getEvent($routeParams.eventId)
       .then(event => {
         $scope.event = event;
-        console.log(event);
+        // console.log(event);
       });
 
     PicaticAPI.getEventTicketPrices($routeParams.eventId)
