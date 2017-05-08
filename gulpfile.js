@@ -11,6 +11,7 @@ var runSequence = require('run-sequence');
 
 var yeoman = {
   app: require('./bower.json').appPath || 'app',
+  temp: '.tmp',
   dist: 'dist'
 };
 
@@ -31,6 +32,7 @@ var paths = {
   karma: 'karma.conf.js',
   views: {
     main: yeoman.app + '/index.html',
+    bowermain: yeoman.temp + '/index.html',
     files: [yeoman.app + '/views/**/*.html']
   }
 };
@@ -49,7 +51,7 @@ var styles = lazypipe()
     precision: 10
   })
   .pipe($.autoprefixer, 'last 1 version')
-  .pipe(gulp.dest, '.tmp/styles');
+  .pipe(gulp.dest, yeoman.temp + '/styles');
 
 ///////////
 // Tasks //
@@ -66,7 +68,7 @@ gulp.task('lint:scripts', function () {
 });
 
 gulp.task('clean:tmp', function (cb) {
-  rimraf('./.tmp', cb);
+  rimraf(yeoman.temp, cb);
 });
 
 gulp.task('start:client', ['start:server', 'styles'], function () {
@@ -75,7 +77,7 @@ gulp.task('start:client', ['start:server', 'styles'], function () {
 
 gulp.task('start:server', function() {
   $.connect.server({
-    root: [yeoman.app, '.tmp'],
+    root: [ yeoman.temp, yeoman.app],
     livereload: true,
     // Change this to '0.0.0.0' to access the server from outside.
     port: 9000
@@ -84,7 +86,7 @@ gulp.task('start:server', function() {
 
 gulp.task('start:server:test', function() {
   $.connect.server({
-    root: ['test', yeoman.app, '.tmp'],
+    root: ['test', yeoman.app, yeoman.temp],
     livereload: true,
     port: 9001
   });
@@ -140,10 +142,10 @@ gulp.task('test', ['start:server:test'], function () {
 gulp.task('bower', function () {
   return gulp.src(paths.views.main)
     .pipe(wiredep({
-      directory: yeoman.app + '/bower_components',
+      directory: /*yeoman.app +*/ '/bower_components',
       ignorePath: '..'
     }))
-  .pipe(gulp.dest(yeoman.app + '/views'));
+  .pipe(gulp.dest(yeoman.app/* + '/views'*/));
 });
 
 ///////////
@@ -159,10 +161,11 @@ gulp.task('client:build', ['html', 'styles'], function () {
   var cssFilter = $.filter('**/*.css');
 
   return gulp.src(paths.views.main)
-    .pipe($.useref({searchPath: [yeoman.app, '.tmp']}))
+    .pipe($.plumber())
+    .pipe($.useref({searchPath: [yeoman.app, yeoman.temp]}))
     .pipe(jsFilter)
     .pipe($.ngAnnotate())
-    .pipe($.uglify())
+    // .pipe($.uglify())
     .pipe(jsFilter.restore())
     .pipe(cssFilter)
     .pipe($.minifyCss({cache: true}))
