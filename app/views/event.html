@@ -1,7 +1,16 @@
 {{event.data.data.attributes.title}}
-<div >
-	<ol>
-		<li ng-repeat="price in ticketPrices">{{price.attributes.price | currency:"CND$":0}}
-		</li>
-	</ol>
+<div>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Price</th>
+    </tr>
+    </thead>
+    <tr ng-repeat="price in ticketPrices">
+      <td>{{price.attributes.name}}</td>
+      <td>{{price.attributes.price | currency:"CND$":0}}</td>
+      <td><a href="/#!/event/{{event.id}}/ticket/{{price.id}}">Edit</a></td>
+    </tr>
+  </table>
 </div>

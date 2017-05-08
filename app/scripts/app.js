@@ -32,6 +32,11 @@ angular
         controller: 'EventCtrl',
         controllerAs: 'event'
       })
+      .when('/event/:eventId/ticket/:ticketId', {
+        templateUrl: 'views/ticket.html',
+        controller: 'TicketCtrl',
+        controllerAs: 'ticket'
+      })
       .otherwise({
         redirectTo: '/'
       });

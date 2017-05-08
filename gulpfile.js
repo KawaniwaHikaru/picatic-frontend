@@ -75,16 +75,16 @@ gulp.task('start:client', ['start:server', 'styles'], function () {
   openURL('http://localhost:9000');
 });
 
-gulp.task('start:server', function() {
+gulp.task('start:server', function () {
   $.connect.server({
-    root: [ yeoman.temp, yeoman.app],
+    root: [yeoman.temp, yeoman.app],
     livereload: true,
     // Change this to '0.0.0.0' to access the server from outside.
     port: 9000
   });
 });
 
-gulp.task('start:server:test', function() {
+gulp.task('start:server:test', function () {
   $.connect.server({
     root: ['test', yeoman.app, yeoman.temp],
     livereload: true,
@@ -121,7 +121,7 @@ gulp.task('serve', function (cb) {
     'watch', cb);
 });
 
-gulp.task('serve:prod', function() {
+gulp.task('serve:prod', function () {
   $.connect.server({
     root: [yeoman.dist],
     livereload: true,
@@ -145,7 +145,7 @@ gulp.task('bower', function () {
       directory: /*yeoman.app +*/ '/bower_components',
       ignorePath: '..'
     }))
-  .pipe(gulp.dest(yeoman.app/* + '/views'*/));
+    .pipe(gulp.dest(yeoman.app/* + '/views'*/));
 });
 
 ///////////
@@ -183,15 +183,15 @@ gulp.task('html', function () {
 gulp.task('images', function () {
   return gulp.src(yeoman.app + '/images/**/*')
     .pipe($.cache($.imagemin({
-        optimizationLevel: 5,
-        progressive: true,
-        interlaced: true
+      optimizationLevel: 5,
+      progressive: true,
+      interlaced: true
     })))
     .pipe(gulp.dest(yeoman.dist + '/images'));
 });
 
 gulp.task('copy:extras', function () {
-  return gulp.src(yeoman.app + '/*/.*', { dot: true })
+  return gulp.src(yeoman.app + '/*/.*', {dot: true})
     .pipe(gulp.dest(yeoman.dist));
 });
 

@@ -113,21 +113,53 @@ angular.module('picaticFrontendApp')
         url: urlBase + '/ticket_price' + '?' + toQueryString(params),
         headers: _headers
       }).then(response => {
-        cache.put('events', response.data.data);
-        return cache.get('events');
+        return response.data.data;
+      });
+    };
+
+    apiFactory.getEventTicket = function (ticketPriceId) {
+      let params = {
+        filter: {},
+        page: _paging
+      };
+
+      return $http({
+        method: 'GET',
+        url: urlBase + '/ticket_price/' + ticketPriceId,
+        headers: _headers
+      }).then(response => {
+        return response.data.data;
+      });
+    };
+
+    apiFactory.saveEventTicket = function (ticket) {
+
+      console.log(ticket.attributes.price);
+      return $http({
+        method: 'PATCH',
+        url: urlBase + '/ticket_price/' + ticket.id,
+        headers: _headers,
+        data: {data: ticket}
+      }).then(response => {
+        console.log(response);
+        // return response.data.data;
       });
     };
 
 
     apiFactory.getEvent = function (eventId) {
+      let events = cache.get('events');
+      if (events) {
+        return Promise.resolve(events)
+      }
       return $http({
         method: 'GET',
         url: urlBase + '/event/' + eventId,
         headers: _headers
       }).then(response => {
-        return response;
-        // cache.put('events', response.data.data);
-        // return cache.get('events');
+        // return response;
+        cache.put('events', response.data.data);
+        return cache.get('events');
       });
     };
 
