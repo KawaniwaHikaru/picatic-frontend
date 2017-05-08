@@ -2,9 +2,10 @@
 
 <table>
   <tr ng-repeat="(idx, event) in events">
-    <td>{{idx}}</td>
-    <!--<td><img src="{{event.attributes.cover_image_uri}}"></td>-->
-    <td><a href="/#!/event/{{event.id}}">{{event.id}}</a></td>
+    <!-- <td>{{idx}}</td> -->
+    <!-- <td><img src="{{event.attributes.cover_image_uri}}"></td> -->
+    <td><a href="/#!/event/{{event.id}}">{{event.attributes.title}}</a></td>
+    <td><p hidden>{{event}}</p></td>
   </tr>
 </table>
 

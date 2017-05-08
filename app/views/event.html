@@ -1,4 +1,7 @@
-{{event}}
-<div ng-repeat="price in ticketPrices">
-  {{price | json}}
+{{event.data.data.attributes.title}}
+<div >
+	<ol>
+		<li ng-repeat="price in ticketPrices">{{price.attributes.price | currency:"CND$":0}}
+		</li>
+	</ol>
 </div>
