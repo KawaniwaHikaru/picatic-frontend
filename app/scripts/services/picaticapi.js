@@ -16,43 +16,41 @@ angular.module('picaticFrontendApp')
     let _headers = {'Authorization': 'Bearer ' + apiToken};
     let _paging = {limit: 10, offset: 0};
     let cache = $cacheFactory('PicaticCache');
-    cache.put('me', {
-      "attributes": {
-        "access_key": "7a2ce3bcb92d2337fb8f7f483f49bb90ef1c76b3",
-        "address_country_id": 38,
-        "address_locality": "Vancouver",
-        "address_postalcode": "V6B 5C6",
-        "address_region_id": 2,
-        "address_street": "375 Water St",
-        "avatar_uri": "https://s3.amazonaws.com/files.picatic.com/users/575569/f9f9db1a-c858-4415-86ff-6125f2bcb5c1",
-        "company": "Picatic",
-        "contacted": null,
-        "created": "2017-04-27T18:53:24Z",
-        "deleted": false,
-        "deleted_date": null,
-        "email": "jon+frontendchallenge@picatic.com",
-        "facebook_id": "",
-        "first_name": "Front",
-        "id": 575569,
-        "last_name": "End Challenge",
-        "mailchimp_access_token": null,
-        "modified": "2017-04-27T15:06:11Z",
-        "newsletter": null,
-        "payable_to": null,
-        "stripe_api_key": null,
-        "stripe_publishable_key": null,
-        "telephone": "",
-        "website": "http://www.picatic.com"
-      }, "id": "575569", "relationships": {}, "type": "user"
-    })
+    // cache.put('me', {
+    //   "attributes": {
+    //     "access_key": "7a2ce3bcb92d2337fb8f7f483f49bb90ef1c76b3",
+    //     "address_country_id": 38,
+    //     "address_locality": "Vancouver",
+    //     "address_postalcode": "V6B 5C6",
+    //     "address_region_id": 2,
+    //     "address_street": "375 Water St",
+    //     "avatar_uri": "https://s3.amazonaws.com/files.picatic.com/users/575569/f9f9db1a-c858-4415-86ff-6125f2bcb5c1",
+    //     "company": "Picatic",
+    //     "contacted": null,
+    //     "created": "2017-04-27T18:53:24Z",
+    //     "deleted": false,
+    //     "deleted_date": null,
+    //     "email": "jon+frontendchallenge@picatic.com",
+    //     "facebook_id": "",
+    //     "first_name": "Front",
+    //     "id": 575569,
+    //     "last_name": "End Challenge",
+    //     "mailchimp_access_token": null,
+    //     "modified": "2017-04-27T15:06:11Z",
+    //     "newsletter": null,
+    //     "payable_to": null,
+    //     "stripe_api_key": null,
+    //     "stripe_publishable_key": null,
+    //     "telephone": "",
+    //     "website": "http://www.picatic.com"
+    //   }, "id": "575569", "relationships": {}, "type": "user"
+    // })
 
     // building the form query string,
     // WHY DID YOU GUYS DESIGN YOUR RESTFUL PAGING THISWAY???
     function toQueryString(obj) {
-
       function flattenObj(x, path) {
         let result = [];
-
         path = path || [];
 
         Object.keys(x).forEach(function (key) {
@@ -99,6 +97,26 @@ angular.module('picaticFrontendApp')
       return queryString;
     }
 
+    apiFactory.getMe = function () {
+      let data = (cache.get('me'));
+
+      // resolve the promise with data
+      if (data)
+        {return Promise.resolve(data);}
+      else {
+        let req = {
+          method: 'GET',
+          url: urlBase + '/user/me',
+          headers: _headers
+        };
+
+        return $http(req).then((response)=> {
+          cache.put('me', response.data.data);
+          return cache.get('me');
+        });
+      }
+    };
+
     apiFactory.getEventTicketPrices = function (eventId) {
       // let event = cache.get('me');
       let params = {
@@ -118,11 +136,6 @@ angular.module('picaticFrontendApp')
     };
 
     apiFactory.getEventTicket = function (ticketPriceId) {
-      let params = {
-        filter: {},
-        page: _paging
-      };
-
       return $http({
         method: 'GET',
         url: urlBase + '/ticket_price/' + ticketPriceId,
@@ -148,10 +161,11 @@ angular.module('picaticFrontendApp')
 
 
     apiFactory.getEvent = function (eventId) {
-      let events = cache.get('events');
-      if (events) {
-        return Promise.resolve(events)
-      }
+      // let events = cache.get('events');
+      // if (events) {
+      //   return Promise.resolve(events)
+      // }
+
       return $http({
         method: 'GET',
         url: urlBase + '/event/' + eventId,
@@ -164,49 +178,50 @@ angular.module('picaticFrontendApp')
     };
 
     apiFactory.findEvents = function () {
+
       let me = cache.get('me');
-      let params = {
-        filter: {
-          user_id: me.id
-        },
-        page: _paging
-      };
+      if (!me) {
+        return apiFactory.getMe().then( (response) => {
 
-      return $http({
-        method: 'GET',
-        url: urlBase + '/event' + '?' + toQueryString(params),
-        headers: _headers
-      }).then(response => {
-        cache.put('events', response.data.data);
-        return cache.get('events');
-      });
-    };
-
-    apiFactory.getMe = function () {
-
-      let data = (cache.get('me'));
-
-      // resolve the promise with data
-      if (data)
-        return Promise.resolve(data);
-      else {
-        let req = {
-          method: 'GET',
-          url: urlBase + '/user/me',
-          headers: _headers
+        let params = {
+          filter: {
+            user_id: response.id
+          },
+          page: _paging
         };
 
-        return $http(req).then((response)=> {
-          cache.put('me', response.data.data);
-          return cache.get('me');
+        return $http({
+          method: 'GET',
+          url: urlBase + '/event' + '?' + toQueryString(params),
+          headers: _headers
+        }).then(response => {
+          cache.put('events', response.data.data);
+          return cache.get('events');
+        });
+      });
+      }
+      else {
+        let params = {
+          filter: {
+            user_id: me.id
+          },
+          page: _paging
+        };
+
+        return $http({
+          method: 'GET',
+          url: urlBase + '/event' + '?' + toQueryString(params),
+          headers: _headers
+        }).then(response => {
+          cache.put('events', response.data.data);
+          return cache.get('events');
         });
       }
-
     };
 
     // default
     apiFactory.getMe().then((me)=> {
-
+      cache.put('me', me);
     });
 
     return apiFactory;
